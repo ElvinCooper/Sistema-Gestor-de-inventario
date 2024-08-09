@@ -16,6 +16,5 @@ cursor = conexion.cursor()
 query = 'CREATE TABLE INVENTARIO (ID_PRODUCTO NUMBER(4), DESCRIPCION_PRODUCTO VARCHAR2(60), CATEGORIA VARCHAR2(50), CANTIDAD NUMBER, PRECIO NUMBER)'
 cursor.execute(query)
 
-
 conexion.close()
 

@@ -17,8 +17,11 @@ def menu_principal():
     print('5. Generar un reporte de inventario')
     print('6. Salir\n')
 
+    
+
 
 menu_principal()
+
 
 # Insercion de productos
 def digitar_producto():
@@ -40,8 +43,8 @@ def digitar_producto():
         )
     except cx_Oracle.DatabaseError as err:
         print('No fue posible establecer la conexion', err)    
-    else:
-        print('La conexion fue exitosa', conexion.version)    
+    # else:
+    #     print('La conexion fue exitosa', conexion.version)    
 
     cursor = conexion.cursor()    
     query = f"INSERT INTO INVENTARIO VALUES ({codigo}, '{nombre}', '{categoria}' , {cantidad}, {precio})\n"
@@ -55,13 +58,59 @@ def digitar_producto():
 
     print('Producto agregado exitosamente al inventario\n')
 
-    opcion = input('Presione cualquier tecla para regresar al menu principal: ') 
+    opcion = input('Presione 0 para regresar al menu principal: ') 
     #print('Presione cualquier tecla para regresar al menu principal')
-    if opcion:
-        menu_principal() 
+    if opcion == 0:
+        menu_principal()    
 
+
+
+def consultar_productos():
+    print('=============================================================')
+    print('               CONSULTA DE PRODUCTOS                         ')
+    print('=============================================================\n') 
+
+    id_codigo = int(input('Digite el codigo del producto: '))
+
+
+    try:
+        conexion = cx_Oracle.connect(
+            user = 'TRAIN7',
+            password = 'TRAIN7',
+            dsn = 'SID_CR1'
+        )
+    except cx_Oracle.DatabaseError as err:
+        print('No fue posible establecer la conexion', err)    
+    # else:
+    #     print('La conexion fue exitosa', conexion.version)    
+
+    cursor = conexion.cursor()    
+    query = f"SELECT * FROM INVENTARIO WHERE ID_PRODUCTO = {id_codigo}"
+    cursor.execute(query)
+    resultado = cursor.fetchall()
+
+    for row in resultado:
+        codigo     = row[0]
+        descripcon = row[1]
+        cantidad   = row[2]
+        categoria  = row[3]
+        precio     = row[4]
+
+        print(f'Codigo: {codigo}\nDescripcion: {descripcon}\nCantidad: {cantidad}\nCategoria: {categoria}\nPrecio: {precio}\n')        
+
+    # cerrar el comando y la conexion a la base de datos
+    cursor.close()
+    conexion.close()        
+
+    while True:
+        salida = input('Presione 0 para volver al menu principal: ')
+        if salida == 0:
+            break
+    menu_principal()
+    # opcion = input('Presione 0 para regresar al menu principal: ') 
     
-
+    # if opcion == 0:
+    #     menu_principal()
 
 
 def limpiar_pantalla():
@@ -72,12 +121,13 @@ def limpiar_pantalla():
         os.system('clear')
 
 
-
-
 opcion = int(input('Opcion deseada: '))
 if opcion == 1:
-    limpiar_pantalla()
+    #limpiar_pantalla()
     digitar_producto()
+elif opcion == 2:
+    #limpiar_pantalla()    
+    consultar_productos()
 elif opcion == 6:
     exit 
          
